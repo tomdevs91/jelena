@@ -13,10 +13,17 @@
     "type": "commonjs",
     "description": "",
     "dependencies": {
-       
+        "@prisma/client": "^6.11.1",
+        "bcryptjs": "^3.0.2",
+        "jsonwebtoken": "^9.0.2",
+        "cors": "^2.8.5"
     },
-    "devDependencies": {      
+    "devDependencies": {
         "@types/node": "^22.15.24",
+        "@types/bcryptjs": "^2.4.6",
+        "@types/jsonwebtoken": "^9.0.9",
+        "@types/cors": "^2.8.17",
+        "prisma": "^6.11.1",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
         "typescript": "^5.7.3"
