@@ -27,35 +27,43 @@ const server = http.createServer((req, res) => {
 
         let handlerPath: string | undefined;
 
-        const findHandler = (currentParts: string[]): string | undefined => {
-            // Try .../register/index.post.ts
-            let potentialPath = path.join(apiDir, ...currentParts, `index.${method}.ts`);
-            if (fs.existsSync(potentialPath)) {
-                return potentialPath;
-            }
+        const possibleExts = ['ts', 'js'];
 
-            // Try .../auth/register.post.ts
-            const partsCopy = [...currentParts];
-            if (partsCopy.length > 0) {
-                const lastPart = partsCopy.pop();
-                const filePath = path.join(apiDir, ...partsCopy, `${lastPart}.${method}.ts`);
-                if (fs.existsSync(filePath)) {
-                    return filePath;
+        const findHandler = (currentParts: string[]): string | undefined => {
+            // Try .../register/index.post.ts or .js
+            for (const ext of possibleExts) {
+                let potentialPath = path.join(apiDir, ...currentParts, `index.${method}.${ext}`);
+                if (fs.existsSync(potentialPath)) {
+                    return potentialPath;
                 }
             }
 
-            // Try .../products/[id].get.ts
+            // Try .../auth/register.post.ts or .js
+            const partsCopy = [...currentParts];
+            if (partsCopy.length > 0) {
+                const lastPart = partsCopy.pop();
+                for (const ext of possibleExts) {
+                    const filePath = path.join(apiDir, ...partsCopy, `${lastPart}.${method}.${ext}`);
+                    if (fs.existsSync(filePath)) {
+                        return filePath;
+                    }
+                }
+            }
+
+            // Try .../products/[id].get.ts or .js
             if (currentParts.length > 0) {
                 const paramValue = currentParts.pop();
                 const parentDir = path.join(apiDir, ...currentParts);
 
                 if (fs.existsSync(parentDir)) {
-                     const dynamicFile = fs.readdirSync(parentDir).find(f => f.startsWith('[') && f.endsWith(`].${method}.ts`));
-                     if (dynamicFile) {
-                         const paramName = dynamicFile.match(/\[(.*?)\]/)![1];
-                         params[paramName] = paramValue!;
-                         return path.join(parentDir, dynamicFile);
-                     }
+                    for (const ext of possibleExts) {
+                        const dynamicFile = fs.readdirSync(parentDir).find(f => f.startsWith('[') && f.endsWith(`].${method}.${ext}`));
+                        if (dynamicFile) {
+                            const paramName = dynamicFile.match(/\[(.*?)\]/)![1];
+                            params[paramName] = paramValue!;
+                            return path.join(parentDir, dynamicFile);
+                        }
+                    }
                 }
             }
             return undefined;
