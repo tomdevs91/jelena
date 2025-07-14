@@ -43,7 +43,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
             const token = jwt.sign(
                 { userId: user.id, email: user.email },
                 JWT_SECRET,
-                { expiresIn: '1h' }
+                { expiresIn: '1h' } as jwt.SignOptions
             );
 
             res.writeHead(200, { 'Content-Type': 'application/json' });

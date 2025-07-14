@@ -1,7 +1,7 @@
 import prisma from '../../utils/prisma';
-import { defineEventHandler } from '../../utils/events';
+import { defineSecureEventHandler } from '../../utils/events';
 
-export default defineEventHandler(async () => {
+export default defineSecureEventHandler(async () => {
   const customers = await prisma.customer.findMany();
   return customers;
 }); 

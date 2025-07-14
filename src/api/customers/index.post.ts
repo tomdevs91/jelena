@@ -1,7 +1,7 @@
 import prisma from '../../utils/prisma';
-import { defineEventHandler, EventHandlerRequest } from '../../utils/events';
+import { defineSecureEventHandler, EventHandlerRequest } from '../../utils/events';
 
-export default defineEventHandler(async (event: EventHandlerRequest) => {
+export default defineSecureEventHandler(async (event: EventHandlerRequest) => {
   const { name, email } = event.body;
   const customer = await prisma.customer.create({
       data: { name, email },
